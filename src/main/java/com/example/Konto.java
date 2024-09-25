@@ -20,22 +20,19 @@ public class Konto {
     }
 
     // Methode zur Kontoeröffnung
-    public void eroeffnen(double ersteEinzahlung, LocalDate eroeffnungsdatum) {
+    public void eroeffnen(double ersteEinzahlung, LocalDate eroeffnungsdatum, String grund) {
         if (ersteEinzahlung <= 0) {
             System.out.println("Error: neues Konto kann nicht eröffnet werden! Einzahlung ist erforderlich");
         }
         // erste Einzahlung bei Kontoeröffnung
-        einzahlen(ersteEinzahlung, eroeffnungsdatum);
+        einzahlen(ersteEinzahlung, eroeffnungsdatum, grund);
     }
-    public void einzahlen(double betrag, LocalDate transaktionDatum) {
+    public void einzahlen(double betrag, LocalDate transaktionDatum, String grund) {
         this.kontostand += betrag;
-        this.myBew.add(new Kontobewegung(betrag, transaktionDatum, this));
+        this.myBew.add(new Kontobewegung(betrag, transaktionDatum, this, grund));
     }
 
-    public void abheben(double betrag, LocalDate transaktionDatum) {
-        this.kontostand -= betrag;
-        this.myBew.add(new Kontobewegung(-betrag, transaktionDatum, this));
-    }
+
 
 
 

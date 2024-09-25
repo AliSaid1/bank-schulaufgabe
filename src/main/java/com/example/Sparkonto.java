@@ -15,8 +15,8 @@ public class Sparkonto extends Konto {
         return kontostand;
     }
 
-    public void berechneZinsen(LocalDate datum) {
-        double zinsen = kontostand * (habenzins / 100);//Jährlich
-        einzahlen(zinsen, datum);
-    }
+//    public void berechneZinsen(LocalDate datum) {
+//        double zinsen = kontostand * (habenzins / 100);//Jährlich
+//        einzahlen(zinsen, datum, );
+//    }
 }

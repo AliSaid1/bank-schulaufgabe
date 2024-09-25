@@ -1,8 +1,5 @@
 package com.example;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 public class Bank {
     protected final String blz = "500 401 50";
     protected final String institutsname = "Sparkasse Münster";
@@ -23,31 +20,34 @@ public class Bank {
         for (Konto konto : myKunde.konten) {
             System.out.println(
                     "Kto-Nr.: " + konto.ktoNummer + ",\n" +
-                            "BLZ: " + blz + ", " + institutsname + ",\n" +
-                            "kontostand: " + konto.kontostand + " Euro\n"
+                    "BLZ: " + blz + ", " + institutsname + ",\n" +
+                    "kontostand: " + konto.kontostand + " Euro\n"
             );
         }
     }
 
 
-    public void printKontoInfo1(Kunde kunde) {
-        NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
+    public void printKontoauszug(Kunde kunde) {
         for (Konto konto : kunde.konten) {
-            System.out.println("Kontoauszug");
-            System.out.println("Kto-Nr.: " + konto.ktoNummer + ",");
-            System.out.println("BLZ: " + blz + ", " + institutsname + ",");
-            System.out.println("Kontostand: " + nf.format(konto.kontostand) + " Euro");
-            System.out.println("Kontoinhaber: " + kunde.name);
+            System.out.println(
+                    "Kontoauszug\n" +
+                    "Kto-Nr.: " + konto.ktoNummer + ",\n" +
+                    "BLZ: " + blz + ", " + institutsname + ",\n" +
+                    "Kontostand: " + konto.kontostand + " Euro\n" +
+                    "Kontoinhaber: " + kunde.name
+            );
             System.out.println();
-            printTransaktionen(konto, nf);
+            printTransaktionen(konto);
         }
     }
 
-    public void printTransaktionen(Konto konto, NumberFormat nf) {
-        int index = 1;
-        for (Kontobewegung bewegung : konto.myBew) {
-            System.out.println(index + "   " + bewegung.datum + "   " + nf.format(bewegung.betrag) + " Euro");
-            index++;
+    public void printTransaktionen(Konto konto) {
+        int i = 1;
+        for (Kontobewegung kontobewegung: konto.myBew) {
+            System.out.println(i + "  " + kontobewegung.datum + "   " +
+                    kontobewegung.betrag + " Euro   " + kontobewegung.grund);
+            i++;
         }
+        System.out.println();
     }
 }
