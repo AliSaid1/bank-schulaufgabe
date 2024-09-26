@@ -33,24 +33,20 @@ public class Girokonto extends Konto {
         long tageZwischen = ChronoUnit.DAYS.between(alteDatum, neueDatum);
         double zinsen = berechneZinsen(tageZwischen);
 
-        if (grund.equals("Einzahlung") || grund.equals("Quartal") || grund.equals("Ersteinzahlung")) {
+        if (grund.equals("Einzahlung") || grund.equals("Ersteinzahlung")) {
             kontostandNew = kontostand + betrag;
-        } else {
+        } else if (grund.equals("Auszahlung")){
             kontostandNew = kontostand - betrag;
+        } else {
+            kontostandNew =  kontostand;//kein Betrag d.h: kontostandNew ist direkt der letzte kontostandNew bzw. kontostand unverändert
         }
         System.out.println("vor Buchung: " + kontostand);
-        //tageZwischen = neueDatum - alteDatum;
-
 
         betragBuchen(alteDatum, betrag, grund);
 
         zinssumme = zinssumme + zinsen;
 
-        System.out.println("nach Buchung: " + runden(kontostand) + " new Kontostand: " + runden(kontostandNew) + " tage: " + tageZwischen + " zinsen: " + runden(zinsen) + " zinssumme: " + runden(zinssumme));
-        if (grund.equals("Quartal")){
-            zinssumme = zinssumme + zinsen;
-            zinsenBerechnungenQuartal(tageZwischen, zinssumme, kontostandNew);
-        }
+        System.out.println("nach Buchung: " + runden(kontostand) + " new Kontostand / bei Quartal OLD = new: " + runden(kontostandNew) + " tage: " + tageZwischen + " zinsen: " + runden(zinsen) + " zinssumme: " + runden(zinssumme));
 
     }
 
@@ -65,10 +61,27 @@ public class Girokonto extends Konto {
         return zinsen;
     }
 
+    public void zinsenBerechnungenQuartal() {
+        //berechneZinsen wieder hier um auf -4,44 zu kommen, zinssumme ist hier -4,15
+        //letzte zinsen -0.29 + zinssumme -4,15
+        //letzte zinsen + die letzte berechnete zinsumme
+        zinssumme += zinsen;
+
+        kontostand += zinssumme;
+
+        System.out.println("Zinssumme für das Quartal: " + runden(zinssumme) + " Euro");
+        System.out.println("Neuer Kontostand nach Quartal: " + runden(kontostand) + " Euro");
+
+        // Reset zinssumme für den nächsten Quartalsabschluss
+        zinssumme = 0;
+
+    }
+
     private void betragBuchen(LocalDate alteDatum, double betrag, String grund) {
         switch (grund) {
-            case "Einzahlung", "Quartal" -> einzahlen(betrag, alteDatum, grund);
+            case "Einzahlung" -> einzahlen(betrag, alteDatum, grund);
             case "Auszahlung" -> abheben(betrag, alteDatum, grund);
+            case "Quartal" -> zinsenBerechnungenQuartal();
             default -> eroeffnen(betrag, alteDatum, grund);
         }
     }
@@ -79,7 +92,20 @@ public class Girokonto extends Konto {
         return bigDecimal.doubleValue();//Konvertiert das gerundete bigDecimal zurück in einen double
     }
 
-    public void zinsenBerechnungenQuartal(long tageZwischen, double Zinssumme, double kontostandNew) {
+
+    @Override
+    public String toString() {
+        return "Girokonto{" +
+                "sollzins=" + sollzins +
+                ", dispo=" + dispo +
+                ", ktoNummer='" + ktoNummer + '\'' +
+                ", kontostand=" + kontostand +
+                '}';
+    }
+}
+
+/*
+   public void zinsenBerechnungenQuartal(long tageZwischen, double Zinssumme, double kontostandNew) {
         long summeAllerTagen = 0;
         double result;
 
@@ -94,57 +120,4 @@ public class Girokonto extends Konto {
          result = kontostandNew;
         System.out.println("nach Buchung: " + runden(kontostand) + " new Kontostand: " + runden(result) + " tage: " + tageZwischen + " zinsen: " + runden( zinsen) + " zinssumme: " + runden(zinssumme));
     }
-
-    @Override
-    public String toString() {
-        return "Girokonto{" +
-                "sollzins=" + sollzins +
-                ", dispo=" + dispo +
-                ", ktoNummer='" + ktoNummer + '\'' +
-                ", kontostand=" + kontostand +
-                '}';
-    }
-}
-
-
-
-
-/*
-@Override
-    public void abheben(double betrag, LocalDate transaktionDatum) {
-        if (kontostand - betrag < -dispo) {
-            System.out.println("Kreditlimit von Konto " + ktoNummer + " überzogen. Buchung über " + String.format("%.2f", betrag) + " Euro vom " + transaktionDatum + " wurde nicht ausgeführt.");
-        } else {
-            super.abheben(betrag, transaktionDatum);
-        }
-    }
-
-    // Vierteljährliche Berechnung von Habenzinsen oder Sollzinsen
-    public void berechneZinsen1(LocalDate letzterZinstag, LocalDate datum) {
-        // Calculate the number of days between the last interest calculation and the new date
-        long tageZwischen = ChronoUnit.DAYS.between(letzterZinstag, datum);
-        double zinsSumme = 0.0;
-
-        if (kontostand > 0){
-            double zinsen = kontostand * (habenzins / 100 * tageZwischen / 365);//12 / 3 = 4 Buchungen im Jahr
-            einzahlen(zinsen, datum);
-        } else {
-            double ueberziehungszinsen = Math.abs(kontostand * (sollzins / 100 * tageZwischen / 365));
-            abheben(ueberziehungszinsen, datum);
-        }
-    }
-
-          // vierteljährlich (alle drei Monate)
-    public void berechneZinsen(LocalDate datum) {
-        if (kontostand > 0){
-            double zinsen = kontostand * ((habenzins / 100) / 4);//12 / 3 = 4 Buchungen im Jahr
-            einzahlen(zinsen, datum);
-        }
-        else {
-            double ueberziehungszinsen =  Math.abs(kontostand * (sollzins / 100) / 4);
-            abheben(ueberziehungszinsen, datum);
-        }
-    }
-
-
  */

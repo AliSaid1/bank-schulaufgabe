@@ -42,8 +42,7 @@ public class Main {
 
         g1.buchen(LocalDate.of(2023, 2, 12), LocalDate.of(2023, 3, 24), 400, "Einzahlung");
 
-        g1.buchen(LocalDate.of(2023, 3, 24), LocalDate.of(2023, 3, 31), g1.zinssumme, "Quartal");
-
+        g1.buchen(LocalDate.of(2023, 3, 24), LocalDate.of(2023, 3, 31), 0, "Quartal");
 
         System.out.println();
 
