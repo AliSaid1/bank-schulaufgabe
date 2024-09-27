@@ -1,6 +1,7 @@
 package com.example;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,21 +19,41 @@ public class Main {
         Kunde liese = new Kunde("Liese Fleißig", "Osnabrück", lieseKundeSeit);
 
         Girokonto g1 = new Girokonto("50060080", 0.0, 1.5, paulGiroErf, 7.5, 3000);
-        Girokonto g2 = new Girokonto("50060090", 0.0, 1.5, lieseGiroErf,7.5, 2000);
-        Sparkonto s1 = new Sparkonto("22222222",0.0,5.0, lieseSparErf, 'p');
+        Girokonto g2 = new Girokonto("50060090", 0.0, 1.5, lieseGiroErf, 7.5, 2000);
+        Sparkonto s1 = new Sparkonto("22222222", 0.0, 5.0, lieseSparErf, 'p');
 
         //Bank verwaltet alle Konten und Kunden
-        Bank bank = new Bank(new Kunde[]{paul,liese}, new Konto[]{g1,g2,s1});
+        Bank bank = new Bank(new Kunde[]{paul, liese}, new Konto[]{g1, g2, s1});
         //weise ein Konto zu einem Kunden zu.
-        bank.addKontoToKunde(paul,g1);
-        bank.addKontoToKunde(liese,s1);
-        bank.addKontoToKunde(liese,g2);
+        bank.addKontoToKunde(paul, g1);
+        bank.addKontoToKunde(liese, s1);
+        bank.addKontoToKunde(liese, g2);
 
-        g1.eroeffnen(0, paulGiroErf, "Ersteinzahlung");
-//        g2.eroeffnen(1, lieseGiroErf, "Ersteinzahlung");
-//        s1.eroeffnen(1, lieseSparErf, "Ersteinzahlung");
+        //Paul
+        g1.buchen(paulGiroErf, paulGiroErf, 8500, "Ersteinzahlung");
 
-        g1.buchen(LocalDate.of(2023, 1, 1), LocalDate.of(2023, 1, 1), 200, "Einzahlung");
+        //Liese
+
+
+        s1.eroeffnen(1, lieseSparErf, "Ersteinzahlung");//0
+        s1.einzahlen(2850, liesesTransaktion, "Einzahlung");//1
+        System.out.println("Sparkontostand: " + s1.zinsenBerechnen(liesesTransaktion, LocalDate.of(2024,1,1)));
+
+        g2.buchen(LocalDate.of(2023, 1, 2), LocalDate.of(2023, 2, 11), 1, "Ersteinzahlung");
+
+        g2.buchen(LocalDate.of(2023, 2, 11), LocalDate.of(2023, 2, 11), 100.50, "Auszahlung");//2
+        g2.buchen(LocalDate.of(2023, 2, 11), LocalDate.of(2023,4,1), 50, "Auszahlung");//3
+        //4   01.Apr.2023        -1,51 Euro     Zinsen
+        g2.buchen(LocalDate.of(2023, 2, 11), LocalDate.of(2023,4,1), 0, "Quartal");
+
+        System.out.println();
+        bank.printKontoauszug(liese);
+
+    }
+}
+
+/*
+g1.buchen(LocalDate.of(2023, 1, 1), LocalDate.of(2023, 1, 1), 200, "Einzahlung");
 
         g1.buchen(LocalDate.of(2023, 1, 1), LocalDate.of(2023, 1, 28), 500, "Einzahlung");
 
@@ -43,23 +64,4 @@ public class Main {
         g1.buchen(LocalDate.of(2023, 2, 12), LocalDate.of(2023, 3, 24), 400, "Einzahlung");
 
         g1.buchen(LocalDate.of(2023, 3, 24), LocalDate.of(2023, 3, 31), 0, "Quartal");
-
-        System.out.println();
-
-        //bank.printKontoauszug(paul);
-        //bank.printKontoauszug(liese);
-
-    }
-}
-
-/*
-g1.abheben(8500, paulsTransaktion, "Auszahlung");
-
-        g2.abheben(100.50, liesesTransaktion, "Auszahlung");
-        g2.abheben(50.00, liesesTransaktion, "Auszahlung");
-        s1.einzahlen(2850, liesesTransaktion , "Einzahlung");
-
-        g2.buchen(liesesTransaktion, liesesTransaktion, -100.50);
-        g2.buchen(liesesTransaktion, liesesTransaktion, -50.00);
-
  */

@@ -1,5 +1,7 @@
 package com.example;
 
+import static com.example.RoundingAndFormatting.runden;
+
 public class Bank {
     protected final String blz = "500 401 50";
     protected final String institutsname = "Sparkasse Münster";
@@ -21,7 +23,7 @@ public class Bank {
             System.out.println(
                     "Kto-Nr.: " + konto.ktoNummer + ",\n" +
                     "BLZ: " + blz + ", " + institutsname + ",\n" +
-                    "kontostand: " + konto.kontostand + " Euro\n"
+                    "kontostand: " + runden(konto.kontostand) + " Euro\n"
             );
         }
     }
@@ -33,7 +35,7 @@ public class Bank {
                     "Kontoauszug\n" +
                     "Kto-Nr.: " + konto.ktoNummer + ",\n" +
                     "BLZ: " + blz + ", " + institutsname + ",\n" +
-                    "Kontostand: " + konto.kontostand + " Euro\n" +
+                    "Kontostand: " + runden(konto.kontostand) + " Euro\n" +
                     "Kontoinhaber: " + kunde.name
             );
             System.out.println();
@@ -44,10 +46,11 @@ public class Bank {
     public void printTransaktionen(Konto konto) {
         int i = 1;
         for (Kontobewegung kontobewegung: konto.myBew) {
-            System.out.println(i + "  " + kontobewegung.datum + "   " +
-                    kontobewegung.betrag + " Euro   " + kontobewegung.grund);
+            System.out.println(i + "   " + kontobewegung.datum + "     " +
+                    runden(kontobewegung.betrag) + " Euro   " + kontobewegung.grund);
             i++;
         }
         System.out.println();
     }
+
 }

@@ -22,6 +22,7 @@ public class Kontobewegung {
                 "betrag=" + betrag +
                 ", datum=" + datum +
                 ", myKonto=" + myKonto +
+                ", grund='" + grund + '\'' +
                 '}';
     }
 }
