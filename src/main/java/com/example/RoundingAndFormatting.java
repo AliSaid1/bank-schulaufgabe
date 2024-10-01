@@ -2,6 +2,8 @@ package com.example;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class RoundingAndFormatting {
 
@@ -12,5 +14,10 @@ public class RoundingAndFormatting {
     }
     public static String getFormat(double betrag) {
         return String.format("%.2f", betrag);
+    }
+    // Methode, um Datum(LocalDate) zu dd.MMM.yyyy zu formatieren wie (01.Apr.2023)
+    public static String formatDatum(LocalDate datum) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMMyyyy");
+        return datum.format(formatter);
     }
 }

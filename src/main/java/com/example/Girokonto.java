@@ -3,8 +3,7 @@ package com.example;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static com.example.RoundingAndFormatting.getFormat;
-import static com.example.RoundingAndFormatting.runden;
+import static com.example.RoundingAndFormatting.*;
 
 public class Girokonto extends Konto {
     protected double sollzins;
@@ -23,7 +22,7 @@ public class Girokonto extends Konto {
     public void abheben(double betrag, LocalDate transaktionDatum, String grund) {
         if (betrag > dispo + kontostand) {
             System.out.println("Kreditlimit von Konto " + ktoNummer + " überzogen. Buchung über -" +
-                    getFormat(betrag) + " Euro vom " + transaktionDatum + " wurde nicht ausgeführt.\n");
+                    getFormat(betrag) + " Euro vom " + formatDatum(transaktionDatum) + " wurde nicht ausgeführt.\n");
         } else {
             super.abheben(betrag, transaktionDatum, grund);
         }

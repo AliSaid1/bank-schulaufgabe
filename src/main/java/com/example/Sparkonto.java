@@ -3,7 +3,6 @@ package com.example;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static com.example.RoundingAndFormatting.runden;
 
 public class Sparkonto extends Konto {
     protected char art;// Art des Sparens (z.B. 'F' für Festgeld)
