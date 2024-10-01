@@ -15,41 +15,45 @@ public class Sparkonto extends Konto {
         this.art = art;
     }
 
-    public double zinsenBerechnen(LocalDate alteDatum, LocalDate neueDatum) {
-        double neueKontostand;
-        long tageZwischen = ChronoUnit.DAYS.between(alteDatum, neueDatum);
-
-        double zinsen = berechneZinsen(tageZwischen);
-        zinssumme += zinsen;
-
-        kontostand = kontostand + zinssumme;
-
-        myBew.add(new Kontobewegung(zinssumme, neueDatum, this, "Zinsen"));
-
-        return runden(kontostand);
+    @Override
+    public LocalDate getLastTransactionDate() {
+        return super.getLastTransactionDate();
     }
 
-    private double berechneZinsen(long tageZwischen) {
+    @Override
+    public void zinsBuchung(LocalDate neueDatum, String grund) {
+        alteDatum = getLastTransactionDate();
+
+        long tageZwischen = ChronoUnit.DAYS.between(alteDatum, neueDatum);
+
+        double zinsen = zinsenBerechnung(tageZwischen);
+
+        zinssumme += zinsen;
+
+        if (grund.equals("jährlich")) {
+            schliesseZinsenAb(neueDatum);
+        }
+    }
+
+    private double zinsenBerechnung(long tageZwischen) {
         if (kontostand >= 0) {
             //habenzins
             zinsen = ((habenzins / 100) * kontostand) / 365 * tageZwischen;
         }
         return zinsen;
     }
-//zinsen 15.6219
     @Override
-    public void eroeffnen(double ersteEinzahlung, LocalDate eroeffnungsdatum, String grund) {
-        super.eroeffnen(ersteEinzahlung, eroeffnungsdatum, grund);
-    }
+    public void schliesseZinsenAb(LocalDate letzteTransaktion) {
+        //hier Jährlich
+        kontostand = kontostand + zinssumme;
+//        System.out.println("kontostand: " + runden(kontostand) + " zinssumme: " + runden(zinssumme) + " Datum: " + letzteTransaktion);
+        myBew.add(new Kontobewegung(zinssumme, letzteTransaktion, this, "Zinsen"));
+        zinssumme = 0;
 
-    @Override
-    public void abheben(double betrag, LocalDate transaktionDatum, String grund) {
-        super.abheben(betrag, transaktionDatum, grund);
     }
-
     @Override
-    public void einzahlen(double betrag, LocalDate transaktionDatum, String grund) {
-        super.einzahlen(betrag, transaktionDatum, grund);
+    public void betragBuchen(LocalDate transaktionDatum, double betrag, String grund) {
+        super.betragBuchen(transaktionDatum, betrag, grund);
     }
 
     @Override
@@ -58,4 +62,6 @@ public class Sparkonto extends Konto {
                 "kontostand=" + kontostand +
                 '}';
     }
+
+
 }

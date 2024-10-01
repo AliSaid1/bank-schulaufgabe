@@ -11,6 +11,7 @@ public abstract class Konto {
     protected Kunde myKunde;
     protected List<Kontobewegung> myBew = new ArrayList<>();
     protected LocalDate eroeffnungsdatum;
+    protected LocalDate alteDatum;
 
     public Konto(String ktoNummer, double kontostand, double habenzins, LocalDate eroeffnungsdatum) {
         this.ktoNummer = ktoNummer;
@@ -19,17 +20,31 @@ public abstract class Konto {
         this.eroeffnungsdatum = eroeffnungsdatum;
     }
 
-    //wenn die erste > als dispo 3000
-    // Kontoeröffnung kontostand ist immer null aber man kann von dispo abheben. Man muss erstmal einzahlen
-    public void eroeffnen(double ersteEinzahlung, LocalDate eroeffnungsdatum, String grund) {
-        if (ersteEinzahlung == 0) {
-            System.out.println("Error: neues Konto kann nicht eröffnet werden! Einzahlung ist erforderlich");
-        } else if (ersteEinzahlung == 1) {
-            einzahlen(ersteEinzahlung, eroeffnungsdatum, grund);
-        } else {
-            abheben(ersteEinzahlung, eroeffnungsdatum, grund);
+    public LocalDate getLastTransactionDate() {
+        for (int i = 0; i < myBew.size(); i++) {
+            alteDatum = myBew.get(i).datum;//Transaktionsdatum von der Liste der Kontobewegung holen.
         }
+        return alteDatum;
+    }
 
+    public abstract void zinsBuchung(LocalDate neueDatum, String grund);
+
+    public abstract void schliesseZinsenAb(LocalDate letzteTransaktion);
+
+    public void betragBuchen(LocalDate transaktionDatum, double betrag, String grund) {
+        switch (grund) {
+            case "Einzahlung" -> einzahlen(betrag, transaktionDatum, grund);
+            case "Auszahlung" -> abheben(betrag, transaktionDatum, grund);
+            case "Quartal" -> schliesseZinsenAb(transaktionDatum);
+            default -> eroeffnen(betrag, transaktionDatum, grund);
+        }
+    }
+    public void eroeffnen(double ersteEinzahlung, LocalDate eroeffnungsdatum, String grund) {
+        if (ersteEinzahlung <= 0) {
+            System.out.println("Error: neues Konto kann nicht eröffnet werden! Einzahlung ist erforderlich");
+        } else {
+            einzahlen(ersteEinzahlung, eroeffnungsdatum, grund);
+        }
     }
 
     public void abheben(double betrag, LocalDate transaktionDatum, String grund) {
@@ -44,14 +59,3 @@ public abstract class Konto {
 
 }
 
-
-
-//    public void einzahlen(double betrag, LocalDate datum) {
-//        if (betrag <= 0) {
-//            System.out.println("Error: Der Einzahlungsbetrag muss positiv sein.");
-//        }
-//        kontostand += betrag;
-//        myBew.add(new Kontobewegung(betrag, datum, this));//Verfolgung der Transaktionshistorie eines Kontos
-//    }
-
-//eröffnen( ) einzahlen( )

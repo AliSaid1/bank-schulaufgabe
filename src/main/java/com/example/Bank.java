@@ -13,8 +13,8 @@ public class Bank {
         this.myKunden = myKunden;
     }
 
-    public void addKontoToKunde(Kunde kunde, Konto konto) {//why we added this in Bank class
-        kunde.konten.add(konto);//In der Liste konten wir speichern einKonto zu einem Kunden
+    public void addKontoToKunde(Kunde kunde, Konto konto) {
+        kunde.konten.add(konto);//ein Konto (In Konten) zu einem Kunden zuweisen
     }
 
     public void printKontoInfo(Kunde myKunde) {
